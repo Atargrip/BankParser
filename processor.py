@@ -3,6 +3,7 @@ from typing import List
 from .models import ParseResult, ParseError
 from .parsers.base import Parser
 from .parsers.otbasy import OtbasyParser
+from .parsers.forte import ForteParser
 from .parsers.halyk import HalykParser
 
 class StatementProcessor:
@@ -10,6 +11,7 @@ class StatementProcessor:
         # Теперь оба парсера - это классы, наследуемые от Parser
         self.parsers: List[Parser] = [
             OtbasyParser(),
+            ForteParser(),
             HalykParser(),
         ]
 

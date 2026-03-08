@@ -4,6 +4,8 @@ from .models import ParseResult, ParseError
 from .parsers.base import Parser
 from .parsers.otbasy import OtbasyParser
 from .parsers.halyk import HalykParser
+from .parsers.nurbank import NurbankPdfParser
+
 
 class StatementProcessor:
     def __init__(self):
@@ -11,6 +13,7 @@ class StatementProcessor:
         self.parsers: List[Parser] = [
             OtbasyParser(),
             HalykParser(),
+            NurbankPdfParser(),
         ]
 
     def process_file(self, file_path: str) -> ParseResult:

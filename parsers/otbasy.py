@@ -8,12 +8,38 @@ class OtbasyParser(Parser):
     def can_parse(self, file_bytes: bytes) -> bool:
         try:
             with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
-                if len(pdf.pages) == 0:
+                if not pdf.pages:
                     return False
-                text = pdf.pages[0].extract_text()
-                # Ищем характерные маркеры Отбасы банка
-                return text and ("ОТБАСЫ БАНК" in text.upper() or "OTBASY" in text.upper())
-        except:
+
+                page = pdf.pages[0]
+
+                # text = page.extract_text()
+                # if text:
+                #     text_upper = text.upper()
+                #     if 'НАРОДНЫЙ БАНК КАЗАХСТАНА' in text_upper or 'HSBKKZKX' in text_upper:
+                #         return True
+
+                TARGET_WIDTH = 230.0
+                TARGET_HEIGHT = 81.5
+                TOLERANCE = 0.5
+
+                if hasattr(page, 'images'):
+                    for img in page.images:
+                        try:
+                            w = float(img.get('width', 0))
+                            h = float(img.get('height', 0))
+
+                            # проверка с погрешностью
+                            w_ok = abs(w - TARGET_WIDTH) <= TOLERANCE
+                            h_ok = abs(h - TARGET_HEIGHT) <= TOLERANCE
+
+                            if w_ok and h_ok:
+                                return True
+                        except (ValueError, TypeError):
+                            continue
+
+                return False
+        except Exception:
             return False
 
     def parse(self, file_bytes: bytes) -> ParseResult:

@@ -5,18 +5,44 @@ from .base import Parser
 from ..models import Payment, ParseError, ParseResult
 
 class HalykParser(Parser):
-    def can_parse(self, file_bytes: bytes) -> bool:
-        try:
-            with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
-                if len(pdf.pages) == 0:
+    class HalykParser(Parser):
+        def can_parse(self, file_bytes: bytes) -> bool:
+            try:
+                with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
+                    if not pdf.pages:
+                        return False
+
+                    page = pdf.pages[0]
+
+                    # text = page.extract_text()
+                    # if text:
+                    #     text_upper = text.upper()
+                    #     if 'НАРОДНЫЙ БАНК КАЗАХСТАНА' in text_upper or 'HSBKKZKX' in text_upper:
+                    #         return True
+
+
+                    TARGET_WIDTH = 96.0
+                    TARGET_HEIGHT = 35.0
+                    TOLERANCE = 0.5
+
+                    if hasattr(page, 'images'):
+                        for img in page.images:
+                            try:
+                                w = float(img.get('width', 0))
+                                h = float(img.get('height', 0))
+
+                                # проверка с погрешностью
+                                w_ok = abs(w - TARGET_WIDTH) <= TOLERANCE
+                                h_ok = abs(h - TARGET_HEIGHT) <= TOLERANCE
+
+                                if w_ok and h_ok:
+                                    return True
+                            except (ValueError, TypeError):
+                                continue
+
                     return False
-                text = pdf.pages[0].extract_text()
-                # Ищем характерные маркеры Halyk банка
-                if text and ('Народный Банк' in text or 'Halyk' in text or 'HSBK' in text):
-                    return True
+            except Exception:
                 return False
-        except:
-            return False
 
     def parse(self, file_bytes: bytes) -> ParseResult:
         result = ParseResult()

@@ -4,13 +4,14 @@ from .models import ParseResult, ParseError
 from .parsers.base import Parser
 from .parsers.otbasy import OtbasyParser
 from .parsers.halyk import HalykParser
-
+from .parsers.alataucity import AlatauCityParser
 class StatementProcessor:
     def __init__(self):
         # Теперь оба парсера - это классы, наследуемые от Parser
         self.parsers: List[Parser] = [
             OtbasyParser(),
             HalykParser(),
+            AlatauCityParser(),
         ]
 
     def process_file(self, file_path: str) -> ParseResult:

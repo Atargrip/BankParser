@@ -5,7 +5,7 @@ from .parsers.base import Parser
 from .parsers.otbasy import OtbasyParser
 from .parsers.rbk import RBKParser
 from .parsers.halyk import HalykParser
-
+from .parsers.alataucity import AlatauCityParser
 class StatementProcessor:
     def __init__(self):
         # Теперь оба парсера - это классы, наследуемые от Parser
@@ -13,6 +13,7 @@ class StatementProcessor:
             OtbasyParser(),
             RBKParser(),
             HalykParser(),
+            AlatauCityParser(),
         ]
 
     def process_file(self, file_path: str) -> ParseResult:

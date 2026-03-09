@@ -8,6 +8,7 @@ from .parsers.rbk import RBKParser
 from .parsers.halyk import HalykParser
 from .parsers.nurbank import NurbankPdfParser
 from .parsers.alataucity import AlatauCityParser
+from .parsers.eurasian import EurasianParser
 
 class StatementProcessor:
     def __init__(self):
@@ -18,6 +19,7 @@ class StatementProcessor:
             HalykParser(),
             NurbankPdfParser(),
             AlatauCityParser(),
+            EurasianParser(),
         ]
 
     def process_file(self, file_path: str) -> ParseResult:

@@ -4,6 +4,7 @@ from .nurbank import NurbankPdfParser
 from .rbk import RBKParser
 from .alataucity import AlatauCityParser
 from .forte import ForteParser
+from .eurasian import EurasianParser
 
-__all__ = ['OtbasyParser', 'HalykParser', 'RBKParser', 'AlatauCityParser', 'ForteParser', 'NurbankPdfParser']
+__all__ = ['OtbasyParser', 'HalykParser', 'RBKParser', 'AlatauCityParser', 'ForteParser', 'NurbankPdfParser', 'EurasianParser']
 

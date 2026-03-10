@@ -10,6 +10,7 @@ from .parsers.nurbank import NurbankPdfParser
 from .parsers.alataucity import AlatauCityParser
 from .parsers.eurasian import EurasianParser
 from .parsers.freedom import FreedomParser
+from .parsers.bcc import BccPdfParser
 
 class StatementProcessor:
     def __init__(self):
@@ -22,6 +23,7 @@ class StatementProcessor:
             AlatauCityParser(),
             EurasianParser(),
             FreedomParser(),
+            BccPdfParser(),
         ]
 
     def process_file(self, file_path: str) -> ParseResult:

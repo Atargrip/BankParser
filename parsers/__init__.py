@@ -6,6 +6,7 @@ from .alataucity import AlatauCityParser
 from .forte import ForteParser
 from .eurasian import EurasianParser
 from .freedom import FreedomParser
+from .bcc import BccPdfParser
 
-__all__ = ['OtbasyParser', 'HalykParser', 'RBKParser', 'AlatauCityParser', 'ForteParser', 'NurbankPdfParser', 'EurasianParser','FreedomParser']
+__all__ = ['OtbasyParser', 'HalykParser', 'RBKParser', 'AlatauCityParser', 'ForteParser', 'NurbankPdfParser', 'EurasianParser','FreedomParser', 'BccPdfParser']
 

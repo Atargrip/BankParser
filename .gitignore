@@ -1,3 +1,11 @@
 /.venv/
 /.idea/
 /*.pdf/
+/*.xml
+
+Выписка банков/*
+
+_pycache__/
+*.pyc
+
+.vscode/*

@@ -3,14 +3,27 @@ from typing import List
 from .models import ParseResult, ParseError
 from .parsers.base import Parser
 from .parsers.otbasy import OtbasyParser
+from .parsers.forte import ForteParser
+from .parsers.rbk import RBKParser
 from .parsers.halyk import HalykParser
+from .parsers.nurbank import NurbankPdfParser
+from .parsers.alataucity import AlatauCityParser
+from .parsers.eurasian import EurasianParser
+from .parsers.freedom import FreedomParser
+from .parsers.bcc import BccPdfParser
 
 class StatementProcessor:
     def __init__(self):
-        # Теперь оба парсера - это классы, наследуемые от Parser
         self.parsers: List[Parser] = [
             OtbasyParser(),
+            ForteParser(),
+            RBKParser(),
             HalykParser(),
+            NurbankPdfParser(),
+            AlatauCityParser(),
+            EurasianParser(),
+            FreedomParser(),
+            BccPdfParser(),
         ]
 
     def process_file(self, file_path: str) -> ParseResult:

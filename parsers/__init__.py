@@ -5,6 +5,7 @@ from .rbk import RBKParser
 from .alataucity import AlatauCityParser
 from .forte import ForteParser
 from .eurasian import EurasianParser
+from .freedom import FreedomParser
 
-__all__ = ['OtbasyParser', 'HalykParser', 'RBKParser', 'AlatauCityParser', 'ForteParser', 'NurbankPdfParser', 'EurasianParser']
+__all__ = ['OtbasyParser', 'HalykParser', 'RBKParser', 'AlatauCityParser', 'ForteParser', 'NurbankPdfParser', 'EurasianParser','FreedomParser']
 

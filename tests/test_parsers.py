@@ -1,4 +1,5 @@
 import pytest
+from datetime import date
 from decimal import Decimal
 from unittest.mock import MagicMock, patch
 import io
@@ -140,8 +141,10 @@ def test_halyk_parse_success(mock_pdfplumber):
     result = parser.parse(b"dummy content")
     
     assert len(result.payments) == 2
+    assert result.payments[0].date == date(2024, 1, 1)
     assert result.payments[0].amount == 1000.0
     assert result.payments[0].type == "expense"
+    assert result.payments[1].date == date(2024, 1, 2)
     assert result.payments[1].type == "income"
     assert len(result.errors) == 0
 
@@ -159,7 +162,7 @@ def test_otbasy_parse_success(mock_pdfplumber):
     
     assert len(result.payments) == 1
     p = result.payments[0]
-    assert p.date == "03.11.2025"
+    assert p.date == date(2025, 11, 3)
     assert p.amount == 1000.0
     assert p.type == "expense"
 
@@ -180,9 +183,9 @@ def test_otbasy_parse_year_bug_fix(mock_pdfplumber):
     
     result = parser.parse(b"dummy")
     
-    assert result.payments[0].date == "03.11.2021"
-    assert result.payments[1].date == "15.05.2024"
-    assert result.payments[2].date == "20.12.2025"
+    assert result.payments[0].date == date(2021, 11, 3)
+    assert result.payments[1].date == date(2024, 5, 15)
+    assert result.payments[2].date == date(2025, 12, 20)
 
 def test_parser_error_handling(mock_pdfplumber):
     parser = HalykParser()
@@ -232,6 +235,7 @@ def test_bcc_parse_success(mock_pdfplumber):
     
     result = parser.parse(b"dummy content")
     assert len(result.payments) == 1
+    assert result.payments[0].date == date(2024, 1, 1)
     assert result.payments[0].amount == 500.0
     assert result.payments[0].type == "income"
 
@@ -247,6 +251,7 @@ def test_eurasian_parse_success(mock_pdfplumber):
     
     result = parser.parse(b"dummy content")
     assert len(result.payments) == 1
+    assert result.payments[0].date == date(2024, 1, 1)
     assert result.payments[0].amount == 1500.0
     assert result.payments[0].type == "income"
 
@@ -263,6 +268,7 @@ def test_forte_parse_success(mock_pdfplumber):
     
     result = parser.parse(b"dummy content")
     assert len(result.payments) == 1
+    assert result.payments[0].date == date(2024, 1, 1)
     assert result.payments[0].amount == 100.50
     assert result.payments[0].currency == "USD"
     assert result.payments[0].type == "expense"
@@ -279,6 +285,7 @@ def test_freedom_parse_success(mock_pdfplumber):
     
     result = parser.parse(b"dummy content")
     assert len(result.payments) == 1
+    assert result.payments[0].date == date(2024, 1, 1)
     assert result.payments[0].amount == 2000.0
     assert result.payments[0].type == "income"
 
@@ -294,6 +301,7 @@ def test_nurbank_parse_success(mock_pdfplumber):
     
     result = parser.parse(b"dummy content")
     assert len(result.payments) == 1
+    assert result.payments[0].date == date(2024, 1, 1)
     assert result.payments[0].amount == 3000.0
     assert result.payments[0].type == "expense"
 
@@ -310,5 +318,6 @@ def test_rbk_parse_success(mock_pdfplumber):
     
     result = parser.parse(b"dummy content")
     assert len(result.payments) == 1
+    assert result.payments[0].date == date(2024, 1, 1)
     assert result.payments[0].amount == 4000.0
     assert result.payments[0].type == "income"

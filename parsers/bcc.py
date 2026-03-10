@@ -51,7 +51,7 @@ class BccPdfParser(Parser):
                         amount = abs(amount)
 
                     payment = Payment(
-                        date=date,
+                        date=self.parse_date(date),
                         amount=amount,
                         currency="KZT",
                         type=t_type,

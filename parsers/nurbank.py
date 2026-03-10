@@ -92,7 +92,7 @@ class NurbankPdfParser(Parser):
                             merchant_text = f"{counterparty_name} | {details_str}"
 
                             payment = Payment(
-                                date=date_str,
+                                date=self.parse_date(date_str),
                                 amount=amount,
                                 currency="KZT",
                                 type=t_type,

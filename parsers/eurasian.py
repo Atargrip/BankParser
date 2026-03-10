@@ -95,7 +95,7 @@ class EurasianParser(Parser):
                                 continue
 
                             payment = Payment(
-                                date=date_str,
+                                date=self.parse_date(date_str),
                                 amount=amount,
                                 currency="KZT",
                                 type=t_type,

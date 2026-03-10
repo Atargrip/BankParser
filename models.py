@@ -1,9 +1,10 @@
 from dataclasses import dataclass, field
 from typing import List, Optional
+from datetime import date
 
 @dataclass
 class Payment:
-    date: str
+    date: date
     amount: float
     currency: str
     type: str  # "income" или "expense"

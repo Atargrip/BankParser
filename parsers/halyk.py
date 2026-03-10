@@ -72,7 +72,7 @@ class HalykParser(Parser):
 
                             # Вместо словаря создаем объект Payment (как требует ТЗ)
                             payment = Payment(
-                                date=col_date.split()[0],  # 02.12.2025
+                                date=self.parse_date(col_date.split()[0]),  # 02.12.2025
                                 merchant=col_desc.strip(),
                                 amount=abs(amount),
                                 currency=clean_row[4].replace("\n", ""),

@@ -99,20 +99,18 @@ class OtbasyParser(Parser):
                             # Используем regex, так как иногда в ячейку попадают лишние цифры (например, "2100")
                             date_raw = clean_row[1].replace("\n", "").strip()
                             match = re.search(r'(\d{2})\.(\d{2})\.(\d{2,4})', date_raw)
+                            payment_date = None
                             if match:
                                 d, m, y = match.groups()
-                                if len(y) == 4 and y.startswith("20"):
-                                    year_fixed = y
-                                else:
-                                    # Берем первые 2 цифры года и добавляем "20"
-                                    # Это исправит "2100" -> "2021", "25" -> "2025"
-                                    year_fixed = f"20{y[:2]}"
-                                date_str = f"{d}.{m}.{year_fixed}"
+                                if not (len(y) == 4 and y.startswith("20")):
+                                    # Исправит "2100" -> "2021", "25" -> "2025"
+                                    y = f"20{y[:2]}"
+                                payment_date = self.parse_date(f"{d}.{m}.{y}")
                             else:
-                                date_str = date_raw
+                                payment_date = self.parse_date(date_raw)
 
                             payment = Payment(
-                                date=date_str,
+                                date=payment_date,
                                 amount=amount,
                                 currency="KZT",  # Валюта в шапке документа KZT
                                 type=t_type,

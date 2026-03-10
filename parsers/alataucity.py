@@ -94,7 +94,7 @@ class AlatauCityParser(Parser):
                                 merchant_text = f"{correspondent} | {merchant_desc}".strip(" |")
 
                                 payment = Payment(
-                                    date=date_raw,
+                                    date=self.parse_date(date_raw),
                                     amount=amount,
                                     currency="KZT",
                                     type=t_type,

@@ -76,7 +76,7 @@ class ForteParser(Parser):
                             iin_bin = iin_bin_match.group(1) if iin_bin_match else None
 
                             payment = Payment(
-                                date=date_value,
+                                date=self.parse_date(date_value),
                                 amount=amount,
                                 currency=currency,
                                 type=payment_type,

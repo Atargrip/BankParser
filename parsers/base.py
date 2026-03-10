@@ -1,8 +1,35 @@
 from abc import ABC, abstractmethod
+from datetime import date
 from decimal import Decimal
+from typing import Optional
 from models import ParseResult
 
 class Parser(ABC):
+    @staticmethod
+    def parse_date(date_str: str) -> Optional[date]:
+        if not date_str:
+            return None
+        
+        date_str = date_str.strip()
+        
+        # Try DD.MM.YYYY
+        try:
+            d, m, y = date_str.split('.')
+            if len(y) == 2:
+                y = "20" + y
+            return date(int(y), int(m), int(d))
+        except:
+            pass
+            
+        # Try YYYY-MM-DD
+        try:
+            y, m, d = date_str.split('-')
+            return date(int(y), int(m), int(d))
+        except:
+            pass
+            
+        return None
+
     @staticmethod
     def clean_amount(amount_str) -> Decimal:
         if not amount_str:

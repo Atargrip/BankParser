@@ -32,7 +32,7 @@ class BccPdfParser(Parser):
                         text += "\n" + t
 
                 # операция строкаларын іздеу
-                pattern = r'(\d{4}-\d{2}-\d{2}).*?\n.*?\n(.*?)\n.*?(-?\d[\d\s]+\.\d{2})\s*KZT'
+                pattern = r'(\d{4}-\d{2}-\d{2}).*?\n.*?\n(.*?)\n.*?(-?\d[\d ]+\.\d{2})\s*KZT'
 
                 matches = re.findall(pattern, text, re.DOTALL)
 

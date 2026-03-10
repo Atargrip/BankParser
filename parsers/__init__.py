@@ -1,12 +1,12 @@
-from .otbasy import OtbasyParser
-from .halyk import HalykParser
-from .nurbank import NurbankPdfParser
-from .rbk import RBKParser
-from .alataucity import AlatauCityParser
-from .forte import ForteParser
-from .eurasian import EurasianParser
-from .freedom import FreedomParser
-from .bcc import BccPdfParser
+from parsers.otbasy import OtbasyParser
+from parsers.halyk import HalykParser
+from parsers.nurbank import NurbankPdfParser
+from parsers.rbk import RBKParser
+from parsers.alataucity import AlatauCityParser
+from parsers.forte import ForteParser
+from parsers.eurasian import EurasianParser
+from parsers.freedom import FreedomParser
+from parsers.bcc import BccPdfParser
 
 __all__ = ['OtbasyParser', 'HalykParser', 'RBKParser', 'AlatauCityParser', 'ForteParser', 'NurbankPdfParser', 'EurasianParser','FreedomParser', 'BccPdfParser']
 

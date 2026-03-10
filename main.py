@@ -15,12 +15,12 @@ def main():
 
     if result.payments:
         print(f"\nНайдено платежей: {len(result.payments)}")
-        for i, payment in enumerate(result.payments[:5], 1):
+        for i, payment in enumerate(result.payments[:], 1):
             print(f"{i}. {payment.date} | {payment.amount} {payment.currency} | {payment.type} | {payment.bank}")
             print(f"   Мерчант: {payment.merchant[:50]}...")
-        
-        if len(result.payments) > 5:
-            print(f"... и еще {len(result.payments) - 5} платежей")
+        #
+        # if len(result.payments) > 5:
+        #     print(f"... и еще {len(result.payments) - 5} платежей")
     else:
         print("\nПлатежи не найдены.")
 

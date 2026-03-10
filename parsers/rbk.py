@@ -3,8 +3,8 @@ import re
 
 import pdfplumber
 
-from .base import Parser
-from ..models import Payment, ParseError, ParseResult
+from parsers.base import Parser
+from models import Payment, ParseError, ParseResult
 
 
 class RBKParser(Parser):

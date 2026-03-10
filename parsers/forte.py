@@ -3,8 +3,8 @@ import re
 
 import pdfplumber
 
-from .base import Parser
-from ..models import Payment, ParseError, ParseResult
+from parsers.base import Parser
+from models import Payment, ParseError, ParseResult
 
 
 class ForteParser(Parser):
@@ -40,7 +40,7 @@ class ForteParser(Parser):
                     for row_idx, row in enumerate(table):
                         clean_row = [str(cell).strip() if cell else "" for cell in row]
 
-                        if len(clean_row) < 9:
+                        if len(clean_row) < 8:
                             continue
                         if not re.match(r"^\d+$", clean_row[0]):
                             continue

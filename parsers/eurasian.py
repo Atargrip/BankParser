@@ -1,8 +1,8 @@
 import pdfplumber
 import io
 import re
-from .base import Parser
-from ..models import Payment, ParseError, ParseResult
+from parsers.base import Parser
+from models import Payment, ParseError, ParseResult
 
 
 class EurasianParser(Parser):

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from BankParcer.processor import StatementProcessor
-from BankParcer.models import ParseResult, ParseError
+from processor import StatementProcessor
+from models import ParseResult, ParseError
 
 def test_processor_file_not_found():
     processor = StatementProcessor()
@@ -31,7 +31,7 @@ def test_processor_routing(mock_pdfplumber):
             for p in processor.parsers:
                 p.can_parse = MagicMock(return_value=False)
             
-            from BankParcer.parsers.halyk import HalykParser
+            from parsers.halyk import HalykParser
             halyk_parser = next(p for p in processor.parsers if isinstance(p, HalykParser))
             halyk_parser.can_parse = MagicMock(return_value=True)
             halyk_parser.parse = MagicMock(return_value=ParseResult(payments=[MagicMock()]))

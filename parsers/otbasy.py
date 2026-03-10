@@ -1,8 +1,8 @@
 import pdfplumber
 import io
 import re
-from .base import Parser
-from ..models import Payment, ParseError, ParseResult
+from parsers.base import Parser
+from models import Payment, ParseError, ParseResult
 
 class OtbasyParser(Parser):
     def can_parse(self, file_bytes: bytes) -> bool:
@@ -95,10 +95,21 @@ class OtbasyParser(Parser):
                             else:
                                 continue  # Если везде нули
 
-                            # Форматируем дату из '03.11.25' в '03.11.2025'
-                            if len(date_str) == 8:
-                                day, month, year = date_str.split('.')
-                                date_str = f"{day}.{month}.20{year}"
+                            # Форматируем дату. Ожидаем DD.MM.YY или DD.MM.YYYY
+                            # Используем regex, так как иногда в ячейку попадают лишние цифры (например, "2100")
+                            date_raw = clean_row[1].replace("\n", "").strip()
+                            match = re.search(r'(\d{2})\.(\d{2})\.(\d{2,4})', date_raw)
+                            if match:
+                                d, m, y = match.groups()
+                                if len(y) == 4 and y.startswith("20"):
+                                    year_fixed = y
+                                else:
+                                    # Берем первые 2 цифры года и добавляем "20"
+                                    # Это исправит "2100" -> "2021", "25" -> "2025"
+                                    year_fixed = f"20{y[:2]}"
+                                date_str = f"{d}.{m}.{year_fixed}"
+                            else:
+                                date_str = date_raw
 
                             payment = Payment(
                                 date=date_str,

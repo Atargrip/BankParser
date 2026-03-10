@@ -3,17 +3,17 @@ from decimal import Decimal
 from unittest.mock import MagicMock, patch
 import io
 
-from BankParcer.parsers.base import Parser
-from BankParcer.parsers.halyk import HalykParser
-from BankParcer.parsers.otbasy import OtbasyParser
-from BankParcer.parsers.alataucity import AlatauCityParser
-from BankParcer.parsers.bcc import BccPdfParser
-from BankParcer.parsers.eurasian import EurasianParser
-from BankParcer.parsers.forte import ForteParser
-from BankParcer.parsers.freedom import FreedomParser
-from BankParcer.parsers.nurbank import NurbankPdfParser
-from BankParcer.parsers.rbk import RBKParser
-from BankParcer.models import Payment, ParseError
+from parsers.base import Parser
+from parsers.halyk import HalykParser
+from parsers.otbasy import OtbasyParser
+from parsers.alataucity import AlatauCityParser
+from parsers.bcc import BccPdfParser
+from parsers.eurasian import EurasianParser
+from parsers.forte import ForteParser
+from parsers.freedom import FreedomParser
+from parsers.nurbank import NurbankPdfParser
+from parsers.rbk import RBKParser
+from models import Payment, ParseError
 
 # --- Tests for Parser.clean_amount ---
 
@@ -162,6 +162,27 @@ def test_otbasy_parse_success(mock_pdfplumber):
     assert p.date == "03.11.2025"
     assert p.amount == 1000.0
     assert p.type == "expense"
+
+def test_otbasy_parse_year_bug_fix(mock_pdfplumber):
+    parser = OtbasyParser()
+    mock_pdf = mock_pdfplumber.return_value.__enter__.return_value
+    mock_page = MagicMock()
+    mock_pdf.pages = [mock_page]
+    
+    # Случай с ошибкой "2100" (когда к "21" приклеились нули)
+    row1 = ["1", "03.11.2100", "doc1", "123456789012", "bik", "bank", "acc", "Corr Name", "1000", "0", "Description"]
+    # Случай с нормальным длинным годом "2024"
+    row2 = ["2", "15.05.2024", "doc2", "123456789012", "bik", "bank", "acc", "Corr Name", "0", "500", "Description"]
+    # Случай с коротким годом "25"
+    row3 = ["3", "20.12.25", "doc3", "123456789012", "bik", "bank", "acc", "Corr Name", "200", "0", "Description"]
+    
+    mock_page.extract_tables.return_value = [[row1, row2, row3]]
+    
+    result = parser.parse(b"dummy")
+    
+    assert result.payments[0].date == "03.11.2021"
+    assert result.payments[1].date == "15.05.2024"
+    assert result.payments[2].date == "20.12.2025"
 
 def test_parser_error_handling(mock_pdfplumber):
     parser = HalykParser()

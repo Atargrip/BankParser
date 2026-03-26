@@ -45,7 +45,6 @@ class OtbasyParser(Parser):
     def parse(self, file_bytes: bytes) -> ParseResult:
         result = ParseResult()
 
-        # Настройки для извлечения таблицы с явными границами (как в PDF Отбасы)
         table_settings = {
             "vertical_strategy": "lines",
             "horizontal_strategy": "lines",
@@ -56,23 +55,19 @@ class OtbasyParser(Parser):
                 tables = page.extract_tables(table_settings)
                 for table in tables:
                     for row_idx, row in enumerate(table):
-                        # Очищаем ячейки от None
-                        clean_row = [str(cell).strip() if cell else "" for cell in row]
+                        # Сразу очищаем от мусора
+                        clean_row =[str(cell).strip() if cell else "" for cell in row]
 
-                        # В таблице Отбасы банка 11 колонок. Пропускаем короткие строки
                         if len(clean_row) < 11:
                             continue
 
-                        # Проверяем, что первая колонка - это порядковый номер (цифры), чтобы отсеять шапку
+                        # Отличный фильтр заголовков от автора (оставляем его)
+                        # Если 1-я колонка содержит только цифры (номер по порядку), то это транзакция
                         if not re.match(r'^\d+$', clean_row[0]):
                             continue
 
                         try:
-                            # Маппинг колонок (на основе предоставленного PDF):
-                            # 0: №, 1: Дата, 2: № док, 3: БИН/ИИН, 4: БИК, 5: Банк корр.,
-                            # 6: Счет корр., 7: Корреспондент, 8: Дебет, 9: Кредит, 10: Назначение платежа
-
-                            date_str = clean_row[1].replace("\n", "")
+                            date_str = clean_row[1].replace("\n", " ")
                             iin_bin = clean_row[3].replace("\n", "")
                             correspondent = clean_row[7].replace("\n", " ")
                             debit_str = clean_row[8]  # Расход
@@ -85,7 +80,6 @@ class OtbasyParser(Parser):
                             amount = 0.0
                             t_type = ""
 
-                            # Определяем тип операции
                             if debit_amount > 0:
                                 amount = debit_amount
                                 t_type = "expense"
@@ -93,26 +87,26 @@ class OtbasyParser(Parser):
                                 amount = credit_amount
                                 t_type = "income"
                             else:
-                                continue  # Если везде нули
+                                # ПРАВИЛО 2: Было continue, теперь raise ValueError.
+                                # Если у нас есть номер транзакции, но суммы не спарсились - это ошибка!
+                                raise ValueError(f"Обе суммы равны нулю или не распознаны. Расход: '{debit_str}', Приход: '{credit_str}'")
 
-                            # Форматируем дату. Ожидаем DD.MM.YY или DD.MM.YYYY
-                            # Используем regex, так как иногда в ячейку попадают лишние цифры (например, "2100")
-                            date_raw = clean_row[1].replace("\n", "").strip()
-                            match = re.search(r'(\d{2})\.(\d{2})\.(\d{2,4})', date_raw)
-                            payment_date = None
-                            if match:
-                                d, m, y = match.groups()
-                                if not (len(y) == 4 and y.startswith("20")):
-                                    # Исправит "2100" -> "2021", "25" -> "2025"
-                                    y = f"20{y[:2]}"
-                                payment_date = self.parse_date(f"{d}.{m}.{y}")
-                            else:
-                                payment_date = self.parse_date(date_raw)
+                            # ПРАВИЛО 1 и 3: Безопасный парсинг даты и "Ошибки 2100"
+                            date_match = re.search(r'(\d{2})[./-](\d{2})[./-](\d{2,4})', date_str)
+                            if not date_match:
+                                raise ValueError(f"Не удалось найти корректную дату в ячейке: '{date_str}'")
+
+                            d, m, y = date_match.groups()
+                            if len(y) == 4 and not (y.startswith("20") or y.startswith("19")):
+                                y = f"20{y[:2]}"  # 2100 -> 2021, 2610 -> 2026
+                            elif len(y) == 2:
+                                y = f"20{y}"      # 26 -> 2026
+                            safe_date_str = f"{d}.{m}.{y}"
 
                             payment = Payment(
-                                date=payment_date,
+                                date=self.parse_date(safe_date_str),
                                 amount=amount,
-                                currency="KZT",  # Валюта в шапке документа KZT
+                                currency="KZT",  # Валюта в Отбасы всегда KZT
                                 type=t_type,
                                 merchant=description,
                                 bank="Otbasy Bank",
@@ -122,7 +116,7 @@ class OtbasyParser(Parser):
                             result.payments.append(payment)
 
                         except Exception as e:
-                            # Записываем ошибку, если строка сломалась, но продолжаем парсить
+                            # Ошибки дат и сумм аккуратно попадают сюда для логирования
                             result.errors.append(ParseError(
                                 row=row_idx,
                                 column=-1,

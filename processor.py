@@ -6,7 +6,7 @@ from parsers.otbasy import OtbasyParser
 from parsers.forte import ForteParser
 from parsers.rbk import RBKParser
 from parsers.halyk import HalykParser
-from parsers.nurbank import NurbankPdfParser
+from parsers.nurbank import NurbankParser
 from parsers.alataucity import AlatauCityParser
 from parsers.eurasian import EurasianParser
 from parsers.freedom import FreedomParser
@@ -19,7 +19,7 @@ class StatementProcessor:
             ForteParser(),
             RBKParser(),
             HalykParser(),
-            NurbankPdfParser(),
+            NurbankParser(),
             AlatauCityParser(),
             EurasianParser(),
             FreedomParser(),

@@ -8,5 +8,5 @@ from parsers.eurasian import EurasianParser
 from parsers.freedom import FreedomParser
 from parsers.bcc import BccPdfParser
 
-__all__ = ['OtbasyParser', 'HalykParser', 'RBKParser', 'AlatauCityParser', 'ForteParser', 'NurbankPdfParser', 'EurasianParser','FreedomParser', 'BccPdfParser']
+__all__ = ['OtbasyParser', 'HalykParser', 'RBKParser', 'AlatauCityParser', 'ForteParser', 'NurbankParser', 'EurasianParser','FreedomParser', 'BccPdfParser']
 
